@@ -1,0 +1,9 @@
+-r base.in
+
+autopep8
+django-debug-toolbar
+django-silk
+ipdb
+ipython
+isort
+pylint
