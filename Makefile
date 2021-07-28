@@ -96,3 +96,9 @@ collectstatic:
 
 test:
 	@docker exec -it project-dc01 python manage.py test
+
+psql:
+	@docker exec -it anybook-pc01 psql -U postgres
+
+rediscli:
+	@docker exec -it anybook-rc01 redis-cli -h redis

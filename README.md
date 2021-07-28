@@ -16,19 +16,21 @@
 
 ### (dev | stage | prod) ENV. Specific Commands
 replace * with appropriate ENV. name
-* `*.setup`  : build and start containers
-* `*.build`  : build containers
-* `*.up.d`   : start containers in detached mode
-* `*.up`     : start containers in attached mode
-* `*.down`   : stop containers and remove networks
-* `*.restart`: firsts stop containers then start again
-* `*.logs`   : attach to log console of containers
+* `make *.setup`  : build and start containers
+* `make *.build`  : build containers
+* `make *.up.d`   : start containers in detached mode
+* `make *.up`     : start containers in attached mode
+* `make *.down`   : stop containers and remove networks
+* `make *.restart`: firsts stop containers then start again
+* `make *.logs`   : attach to log console of containers
 
 ### Common Commands
-* `dcshell`      : open django container shell
-* `dshell`       : open django shell
-* `ipshell`      : open django ipython shell
-* `dcattach`     : attach to django container
-* `migrate`      : run `makemigrations and migrate` command in django container
-* `collectstatic`: run `collectstatic` command in django container
-* `test`         : run `test` command in django container
+* `make dcshell`      : open django container shell
+* `make dshell`       : open django shell
+* `make ipshell`      : open django ipython shell
+* `make dcattach`     : attach to django container
+* `make migrate`      : run `makemigrations and migrate` command in django container
+* `make collectstatic`: run `collectstatic` command in django container
+* `make test`         : run `test` command in django container
+* `make psql`         : run `psql` in postgres container
+* `make rediscli`     : run `redis cli` in redis container
