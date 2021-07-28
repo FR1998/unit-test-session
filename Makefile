@@ -1,13 +1,21 @@
+SHELL=/bin/bash
+
 REQ_FILES = \
-	config/requirements/base \
-	config/requirements/dev
+	config/requirements/base   \
+	config/requirements/dev    \
+	config/requirements/stage  \
+	config/requirements/prod
 
 compile.requirements:
+	@python3 -m venv .venv
+	@. .venv/bin/activate
+	@pip3 install pip-tools
 	for f in $(REQ_FILES); do \
-  		pip-compile --generate-hashes -o $$f.txt $$f.in || exit 1; \
+		pip-compile --generate-hashes -o $$f.txt $$f.in || exit 1; \
 	done
+	@rm -rf .venv
 
-dev.setup: dev.build dev.up
+dev.all: dev.build dev.up
 
 dev.build:
 	@docker-compose -f docker-compose.dev.yml build
@@ -27,6 +35,46 @@ dev.restart:
 dev.logs:
 	@docker-compose -f docker-compose.dev.yml logs -f
 
+stage.all: stage.build stage.up
+
+stage.build:
+	@docker-compose -f docker-compose.stage.yml build
+
+stage.up.d:
+	@docker-compose -f docker-compose.stage.yml up -d
+
+stage.up:
+	@docker-compose -f docker-compose.stage.yml up
+
+stage.down:
+	@docker-compose -f docker-compose.stage.yml down --remove-orphans
+
+stage.restart:
+	@docker-compose -f docker-compose.stage.yml restart
+
+stage.logs:
+	@docker-compose -f docker-compose.stage.yml logs -f
+
+prod.all: prod.build prod.up
+
+prod.build:
+	@docker-compose -f docker-compose.prod.yml build
+
+prod.up.d:
+	@docker-compose -f docker-compose.prod.yml up -d
+
+prod.up:
+	@docker-compose -f docker-compose.prod.yml up
+
+prod.down:
+	@docker-compose -f docker-compose.prod.yml down --remove-orphans
+
+prod.restart:
+	@docker-compose -f docker-compose.prod.yml restart
+
+prod.logs:
+	@docker-compose -f docker-compose.prod.yml logs -f
+
 dcshell:
 	@docker exec -it project-dc01 /bin/bash
 
@@ -39,10 +87,8 @@ ipshell:
 dcattach:
 	@docker attach project-dc01
 
-migrations:
-	@docker exec -it project-dc01 python manage.py makemigrations
-
 migrate:
+	@docker exec -it project-dc01 python manage.py makemigrations
 	@docker exec -it project-dc01 python manage.py migrate
 
 collectstatic:

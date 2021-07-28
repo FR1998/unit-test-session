@@ -5,5 +5,4 @@ django-cors-headers
 django-redis
 djangorestframework
 drf-yasg
-gunicorn
 psycopg2-binary
