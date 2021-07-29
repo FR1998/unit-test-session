@@ -134,8 +134,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REDIS_HOST = get_env_variable('REDIS_HOST')
 REDIS_PORT = get_env_variable('REDIS_PORT')
 
-CELERY_BROKER_URL = f'{REDIS_HOST}://{REDIS_HOST}:{REDIS_PORT}'
-CELERY_RESULT_BACKEND = f'{REDIS_HOST}://{REDIS_HOST}:{REDIS_PORT}'
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}'
 CELERY_ACCEPT_CONTENT = [
     'application/json',
 ]
@@ -143,11 +143,11 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     }
 }
