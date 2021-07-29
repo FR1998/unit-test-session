@@ -65,7 +65,7 @@ services:
       - project
 
   postgres:
-    image: postgres:13.0-alpine
+    image: postgres:13.3-buster
     container_name: project-pc01
     restart: unless-stopped
     env_file:
