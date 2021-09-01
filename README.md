@@ -34,3 +34,6 @@ replace * with appropriate ENV. name
 * `make test`         : run `test` command in django container
 * `make psql`         : run `psql` in postgres container
 * `make rediscli`     : run `redis cli` in redis container
+
+## Pre Commit Hook Activation
+Once requirements are installed, kindly run `pre-commit install`.

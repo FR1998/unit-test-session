@@ -6,3 +6,4 @@ django-redis
 djangorestframework
 drf-yasg
 psycopg2-binary
+pre-commit
