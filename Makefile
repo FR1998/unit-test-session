@@ -16,6 +16,7 @@ compile.requirements:
 	@rm -rf .venv
 
 dev.all: dev.build dev.up
+dev.deploy: dev.build dev.down dev.up.d migrate collectstatic
 
 dev.build:
 	@docker-compose -f docker-compose.dev.yml build
@@ -36,6 +37,7 @@ dev.logs:
 	@docker-compose -f docker-compose.dev.yml logs -f
 
 stage.all: stage.build stage.up
+stage.deploy: stage.build stage.down stage.up.d migrate collectstatic
 
 stage.build:
 	@docker-compose -f docker-compose.stage.yml build
@@ -56,6 +58,7 @@ stage.logs:
 	@docker-compose -f docker-compose.stage.yml logs -f
 
 prod.all: prod.build prod.up
+prod.deploy: prod.build prod.down prod.up.d migrate collectstatic
 
 prod.build:
 	@docker-compose -f docker-compose.prod.yml build
@@ -92,13 +95,13 @@ migrate:
 	@docker exec -it project-dc01 python manage.py migrate
 
 collectstatic:
-	@docker exec -it project-dc01 python manage.py collectstatic
+	@docker exec -it project-dc01 python manage.py collectstatic --noinput
 
 test:
-	@docker exec -it project-dc01 python manage.py test
+	@docker exec -it project-dc01 python manage.py test --settings=config.settings.test
 
 psql:
-	@docker exec -it anybook-pc01 psql -U postgres
+	@docker exec -it project-pc01 psql -U postgres
 
 rediscli:
-	@docker exec -it anybook-rc01 redis-cli -h redis
+	@docker exec -it project-rc01 redis-cli -h redis
