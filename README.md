@@ -36,6 +36,9 @@ replace * with appropriate ENV. name
 * `make psql`         : run `psql` in postgres container
 * `make rediscli`     : run `redis cli` in redis container
 
+## Pre Commit Hook Activation
+Once requirements are installed, kindly run `pre-commit install`.
+
 ## Enable SSL with Certbot
 ### Stage
 * update `stage-init-letsencrypt.sh`
