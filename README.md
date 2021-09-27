@@ -8,6 +8,7 @@
 * `config/env/*/.django`: change `project` with actual project name.
 * `config/env/*/.postgres`: change `project` with actual project name.
 * `Makefile`: change `project` with actual project name.
+* `config/settings/constance.py`: change `project` with actual project name.
 
 ## Commands
 ### To add a new package
@@ -37,3 +38,16 @@ replace * with appropriate ENV. name
 
 ## Pre Commit Hook Activation
 Once requirements are installed, kindly run `pre-commit install`.
+
+## Enable SSL with Certbot
+### Stage
+* update `stage-init-letsencrypt.sh`
+* update domains
+* `sudo ./stage-init-letsencrypt.sh`
+* uncomment lines in `certbot` and `nginx` services in `docker-compose.stage.py` 
+
+### Stage
+* update `prod-init-letsencrypt.sh`
+* update domains
+* `sudo ./prod-init-letsencrypt.sh`
+* uncomment lines in `certbot` and `nginx` services in `docker-compose.prod.py`

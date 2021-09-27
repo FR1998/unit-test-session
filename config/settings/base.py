@@ -31,6 +31,8 @@ THIRD_PARTY_APPS = [
     'django_celery_beat',
     'drf_yasg',
     'corsheaders',
+    'constance',
+    'django_extensions',
 ]
 
 CUSTOM_APPS = [
@@ -124,6 +126,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/code/static'
+STATICFILES_DIRS = [
+    ('core', BASE_DIR.joinpath('anybook/core/static')),
+]
 MEDIA_ROOT = '/code/media'
 
 # Default primary key field type
@@ -153,3 +158,5 @@ CACHES = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+from .constance import *

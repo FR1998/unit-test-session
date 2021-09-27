@@ -1,11 +1,19 @@
-version: '3'
+version: '3.4'
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - project
+
+x-django-build: &django-build
+  build:
+    context: .
+    dockerfile: ./Dockerfile.stage
 
 services:
 
   celery:
-    build:
-      context: .
-      dockerfile: ./Dockerfile.stage
+    <<: *django-build
     container_name: project-cc01
     restart: unless-stopped
     command: bash -c "celery -A project worker -l info"
@@ -16,13 +24,10 @@ services:
       - ./config/env/stage/.django
     volumes:
       - .:/code/
-    networks:
-      - default
+    <<: *common
 
   celery_beat:
-    build:
-      context: .
-      dockerfile: ./Dockerfile.stage
+    <<: *django-build
     container_name: project-cb01
     restart: unless-stopped
     command: bash -c "celery -A project beat -l info"
@@ -33,16 +38,22 @@ services:
       - ./config/env/stage/.django
     volumes:
       - .:/code/
-    networks:
-      - default
+    <<: *common
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+#    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
   django:
-    build:
-      context: .
-      dockerfile: ./Dockerfile.stage
+    <<: *django-build
     container_name: project-dc01
     restart: unless-stopped
     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    ports:
+      - 8000:8000
     env_file:
       - ./config/env/stage/.django
     volumes:
@@ -51,8 +62,7 @@ services:
       - project_media_volume:/code/media
     depends_on:
       - postgres
-    networks:
-      - default
+    <<: *common
 
   flower:
     image: mher/flower:0.9.7
@@ -61,8 +71,7 @@ services:
     command: ["flower", "--broker=redis://redis:6379/0", "--broker_api=redis://redis:6379/0", "--port=5555"]
     ports:
       - 5555:5555
-    networks:
-      - default
+    <<: *common
 
   nginx:
     image: nginx:1.20.1
@@ -74,10 +83,12 @@ services:
       - ./config/nginx/stage/conf.d:/etc/nginx/conf.d/default.conf
       - project_static_volume:/code/static
       - project_media_volume:/code/media
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
     depends_on:
       - django
-    networks:
-      - default
+#    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    <<: *common
 
   postgres:
     image: postgres:13.3-buster
@@ -89,8 +100,7 @@ services:
       - 5432:5432
     volumes:
       - project_postgres_data:/var/lib/postgresql/data/
-    networks:
-      - default
+    <<: *common
 
   redis:
     image: redis:6.2-buster
@@ -98,11 +108,10 @@ services:
     restart: unless-stopped
     volumes:
       - project_redis_data:/data
-    networks:
-      - default
+    <<: *common
 
 networks:
-  default:
+  project:
     driver: bridge
 
 volumes:

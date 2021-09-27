@@ -1,13 +1,20 @@
-version: '3'
+version: '3.4'
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - project
+
+x-django-build: &django-build
+  build:
+    context: .
+    dockerfile: ./Dockerfile.dev
 
 services:
 
   celery:
-    build:
-      context: .
-      dockerfile: ./Dockerfile.dev
+    <<: *django-build
     container_name: project-cc01
-    restart: unless-stopped
     command: bash -c "celery -A project worker -l info"
     depends_on:
       - django
@@ -16,15 +23,11 @@ services:
       - ./config/env/dev/.django
     volumes:
       - .:/code/
-    networks:
-      - default
+    <<: *common
 
   celery_beat:
-    build:
-      context: .
-      dockerfile: ./Dockerfile.dev
+    <<: *django-build
     container_name: project-cb01
-    restart: unless-stopped
     command: bash -c "celery -A project beat -l info"
     depends_on:
       - django
@@ -33,16 +36,14 @@ services:
       - ./config/env/dev/.django
     volumes:
       - .:/code/
-    networks:
-      - default
+    <<: *common
 
   django:
-    build:
-      context: .
-      dockerfile: ./Dockerfile.dev
+    <<: *django-build
     container_name: project-dc01
-    restart: unless-stopped
     command: bash -c "python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - 8000:8000
     env_file:
       - ./config/env/dev/.django
     volumes:
@@ -51,43 +52,36 @@ services:
       - project_media_volume:/code/media
     depends_on:
       - postgres
-    networks:
-      - default
+    <<: *common
 
   flower:
     image: mher/flower:0.9.7
     container_name: project-fc01
-    restart: unless-stopped
-    command: ["flower", "--broker=redis://redis:6379/0", "--broker_api=redis://redis:6379/0", "--port=5555"]
+    command: [ "flower", "--broker=redis://redis:6379/0", "--broker_api=redis://redis:6379/0", "--port=5555" ]
     ports:
       - 5555:5555
-    networks:
-      - default
+    <<: *common
 
   postgres:
     image: postgres:13.3-buster
     container_name: project-pc01
-    restart: unless-stopped
     env_file:
       - ./config/env/dev/.postgres
     ports:
       - 5432:5432
     volumes:
       - project_postgres_data:/var/lib/postgresql/data/
-    networks:
-      - default
+    <<: *common
 
   redis:
     image: redis:6.2-buster
     container_name: project-rc01
-    restart: unless-stopped
     volumes:
       - project_redis_data:/data
-    networks:
-      - default
+    <<: *common
 
 networks:
-  default:
+  project:
     driver: bridge
 
 volumes:

@@ -7,3 +7,5 @@ djangorestframework
 drf-yasg
 psycopg2-binary
 pre-commit
+django-constance[redis]
+django-extensions
