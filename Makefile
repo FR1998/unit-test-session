@@ -1,20 +1,5 @@
 SHELL=/bin/bash
 
-REQ_FILES = \
-	config/requirements/base   \
-	config/requirements/dev    \
-	config/requirements/stage  \
-	config/requirements/prod
-
-compile.requirements:
-	@python3 -m venv .venv
-	@. .venv/bin/activate
-	@pip3 install pip-tools
-	for f in $(REQ_FILES); do \
-		pip-compile --generate-hashes -o $$f.txt $$f.in || exit 1; \
-	done
-	@rm -rf .venv
-
 dev.all: dev.build dev.up
 dev.deploy: dev.build dev.down dev.up.d migrate collectstatic
 
@@ -77,6 +62,9 @@ prod.restart:
 
 prod.logs:
 	@docker-compose -f docker-compose.prod.yml logs -f
+
+cr:
+	@docker-compose -f docker-compose.cr.yml up --build
 
 dcshell:
 	@docker exec -it project-dc01 /bin/bash
