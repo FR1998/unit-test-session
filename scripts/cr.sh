@@ -8,5 +8,5 @@ REQ_FILES=(
 )
 
 for f in "${REQ_FILES[@]}"; do
-  pip-compile --generate-hashes -o ${f}.txt ${f}.in || exit 1;
+  rm ${f}.txt && pip-compile --generate-hashes -o ${f}.txt ${f}.in || exit 1;
 done
