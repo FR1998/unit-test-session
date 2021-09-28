@@ -13,7 +13,7 @@
 ## Commands
 ### To add a new package
 * put your package name & version in appropriate `config/requirements/*.in` file
-* run `make compile.requirements`
+* run `make cr`
 
 ### (dev | stage | prod) ENV. Specific Commands
 replace * with appropriate ENV. name
@@ -26,6 +26,7 @@ replace * with appropriate ENV. name
 * `make *.logs`   : attach to log console of containers
 
 ### Common Commands
+* `make cr`           : compile requirements
 * `make dcshell`      : open django container shell
 * `make dshell`       : open django shell
 * `make ipshell`      : open django ipython shell
@@ -43,11 +44,17 @@ Once requirements are installed, kindly run `pre-commit install`.
 ### Stage
 * update `stage-init-letsencrypt.sh`
 * update domains
-* `sudo ./stage-init-letsencrypt.sh`
+* by default following command will run in test mode
+  * `sudo ./stage-init-letsencrypt.sh`
+* once confirmed update `staging=0` in `stage-init-letsencrypt.sh` and then run
+  * `sudo ./stage-init-letsencrypt.sh`
 * uncomment lines in `certbot` and `nginx` services in `docker-compose.stage.py` 
 
-### Stage
+### Prod
 * update `prod-init-letsencrypt.sh`
 * update domains
-* `sudo ./prod-init-letsencrypt.sh`
-* uncomment lines in `certbot` and `nginx` services in `docker-compose.prod.py`
+* by default following command will run in test mode
+  * `sudo ./prod-init-letsencrypt.sh`
+* once confirmed update `staging=0` in `prod-init-letsencrypt.sh`
+  * `sudo ./prod-init-letsencrypt.sh`
+* uncomment lines in `certbot` and `nginx` services in `docker-compose.prod.py` 
