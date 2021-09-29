@@ -127,7 +127,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/code/static'
 STATICFILES_DIRS = [
-    ('core', BASE_DIR.joinpath('anybook/core/static')),
+    ('core', BASE_DIR.joinpath('project/core/static')),
 ]
 MEDIA_ROOT = '/code/media'
 
@@ -158,5 +158,9 @@ CACHES = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+CONSTANCE_BACKEND = 'constance.backends.redisd.RedisBackend'
+CONSTANCE_REDIS_CONNECTION = f'{REDIS_HOST}://{REDIS_HOST}:{REDIS_PORT}/0'
+CONSTANCE_REDIS_PREFIX = 'constance:project:'
 
 from .constance import *

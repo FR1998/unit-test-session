@@ -1,5 +1,1 @@
-CONSTANCE_BACKEND = 'constance.backends.redisd.RedisBackend'
-CONSTANCE_REDIS_CONNECTION = f'{REDIS_HOST}://{REDIS_HOST}:{REDIS_PORT}/0'
-CONSTANCE_REDIS_PREFIX = 'constance:project:'
-
 CONSTANCE_CONFIG = {}
