@@ -1,5 +1,5 @@
-celery
-django
+celery==5.2.1
+django==3.2
 django-celery-beat
 django-cors-headers
 django-redis
@@ -9,3 +9,4 @@ psycopg2-binary
 pre-commit
 django-constance[redis]
 django-extensions
+sentry-sdk
