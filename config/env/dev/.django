@@ -1,8 +1,10 @@
 ENV=dev
 HOST=127.0.0.1
 
+DJANGO_ALLOWED_HOSTS=*
 DJANGO_SETTINGS_MODULE=config.settings.dev
 DJANGO_SECRET_KEY=django-insecure-b7pm_x4%gn-rraf#zi9^1!6v0eucuz2-33mkypju-gli^uwv&+
+DJANGO_SENTRY_DSN=''
 
 DB_ENGINE=django.db.backends.postgresql
 DB_HOST=postgres

@@ -1,6 +1,13 @@
+import os
 from pathlib import Path
+
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
+
 from project.core.env_utils import get_env_variable
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -12,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_env_variable('DJANGO_SECRET_KEY')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = get_env_variable('DJANGO_ALLOWED_HOSTS').split(',')
 
 
 # Application definition
@@ -36,6 +43,8 @@ THIRD_PARTY_APPS = [
 ]
 
 CUSTOM_APPS = [
+    'project.core',
+    'project.users'
 ]
 
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
@@ -53,6 +62,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
+
+AUTH_USER_MODEL = 'users.User'
 
 TEMPLATES = [
     {
@@ -165,3 +176,30 @@ CONSTANCE_REDIS_CONNECTION = f'{REDIS_HOST}://{REDIS_HOST}:{REDIS_PORT}/0'
 CONSTANCE_REDIS_PREFIX = 'constance:project:'
 
 from .constance import *
+
+SENTRY_DSN = os.getenv('DJANGO_SENTRY_DSN')
+
+# SENTRY
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration(), CeleryIntegration(), RedisIntegration()],
+
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production,
+        traces_sample_rate=1.0,
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True,
+
+        # By default the SDK will try to use the SENTRY_RELEASE
+        # environment variable, or infer a git commit
+        # SHA as release, however you may want to set
+        # something more human-readable.
+        # release="myapp@1.0.0",
+
+        attach_stacktrace=True,
+        environment=get_env_variable('ENV')
+    )
