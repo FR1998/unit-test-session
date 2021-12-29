@@ -1,5 +1,5 @@
-from django.contrib.auth.models import UserManager
+from django.contrib.auth.models import UserManager as DjangoUserManager
 
 
-class CustomUserManager(UserManager):
+class UserManager(DjangoUserManager):
     pass

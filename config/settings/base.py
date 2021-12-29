@@ -1,5 +1,9 @@
 import os
 from pathlib import Path
+
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
+
 from project.core.env_utils import get_env_variable
 
 import sentry_sdk
@@ -178,8 +182,8 @@ SENTRY_DSN = os.getenv('DJANGO_SENTRY_DSN')
 # SENTRY
 if SENTRY_DSN:
     sentry_sdk.init(
-        dsn="https://examplePublicKey@o0.ingest.sentry.io/0",
-        integrations=[DjangoIntegration()],
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration(), CeleryIntegration(), RedisIntegration()],
 
         # Set traces_sample_rate to 1.0 to capture 100%
         # of transactions for performance monitoring.
@@ -195,4 +199,7 @@ if SENTRY_DSN:
         # SHA as release, however you may want to set
         # something more human-readable.
         # release="myapp@1.0.0",
+
+        attach_stacktrace=True,
+        environment=get_env_variable('ENV')
     )
