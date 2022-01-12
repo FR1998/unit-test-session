@@ -137,9 +137,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/code/static'
-STATICFILES_DIRS = [
-    ('core', BASE_DIR.joinpath('project/core/static')),
-]
+STATICFILES_DIRS = []
 MEDIA_ROOT = '/code/media'
 MEDIA_URL = '/media/'
 
