@@ -14,6 +14,16 @@ x-django-build: &django-build
 
 services:
 
+  caddy:
+    image: caddy:2-alpine
+    container_name: project-caddy
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile
+    <<: *common
+
   celery:
     <<: *django-build
     container_name: project-cc01
