@@ -1,6 +1,8 @@
 version: '3.4'
 
 x-common: &common
+  stdin_open: true
+  tty: true
   restart: unless-stopped
   networks:
     - project
