@@ -52,7 +52,10 @@ cr:
 	@$($*_compose) exec django python manage.py collectstatic --noinput
 
 %.test:
-	@$($*_compose) exec django python manage.py test --settings=config.settings.test
+	@$($*_compose) up --build -d django
+	@$($*_compose) exec -T django coverage run --source='.' manage.py test --settings=config.settings.test
+	@$($*_compose) exec -T django coverage html
+	@$($*_compose) down --remove-orphans
 
 %.psql:
 	@$($*_compose) exec postgres psql -U postgres
