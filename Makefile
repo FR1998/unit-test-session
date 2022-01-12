@@ -1,95 +1,61 @@
 SHELL=/bin/bash
 
-dev.all: dev.build dev.up
-dev.deploy: dev.build dev.down dev.up.d migrate collectstatic
+docker_compose := docker-compose -f
+cr_compose     := $(docker_compose) docker-compose.cr.yml
+dev_compose    := $(docker_compose) docker-compose.dev.yml
+stage_compose  := $(docker_compose) docker-compose.stage.yml
+prod_compose   := $(docker_compose) docker-compose.prod.yml
 
-dev.build:
-	@docker-compose -f docker-compose.dev.yml build
+%.all: %.build %.up
+	;
+%.deploy: %.build %.down %.up.d %.migrate %.collectstatic
+	;
 
-dev.up.d:
-	@docker-compose -f docker-compose.dev.yml up -d
+%.build:
+	@$($*_compose) build
 
-dev.up:
-	@docker-compose -f docker-compose.dev.yml up
+%.up.d:
+	@$($*_compose) up -d
 
-dev.down:
-	@docker-compose -f docker-compose.dev.yml down --remove-orphans
+%.up:
+	@$($*_compose) up
 
-dev.restart:
-	@docker-compose -f docker-compose.dev.yml restart
+%.down:
+	@$($*_compose) down --remove-orphans
 
-dev.logs:
-	@docker-compose -f docker-compose.dev.yml logs -f
+%.restart:
+	@$($*_compose) restart
 
-stage.all: stage.build stage.up
-stage.deploy: stage.build stage.down stage.up.d migrate collectstatic
-
-stage.build:
-	@docker-compose -f docker-compose.stage.yml build
-
-stage.up.d:
-	@docker-compose -f docker-compose.stage.yml up -d
-
-stage.up:
-	@docker-compose -f docker-compose.stage.yml up
-
-stage.down:
-	@docker-compose -f docker-compose.stage.yml down --remove-orphans
-
-stage.restart:
-	@docker-compose -f docker-compose.stage.yml restart
-
-stage.logs:
-	@docker-compose -f docker-compose.stage.yml logs -f
-
-prod.all: prod.build prod.up
-prod.deploy: prod.build prod.down prod.up.d migrate collectstatic
-
-prod.build:
-	@docker-compose -f docker-compose.prod.yml build
-
-prod.up.d:
-	@docker-compose -f docker-compose.prod.yml up -d
-
-prod.up:
-	@docker-compose -f docker-compose.prod.yml up
-
-prod.down:
-	@docker-compose -f docker-compose.prod.yml down --remove-orphans
-
-prod.restart:
-	@docker-compose -f docker-compose.prod.yml restart
-
-prod.logs:
-	@docker-compose -f docker-compose.prod.yml logs -f
+%.logs:
+	@$($*_compose) logs -f
 
 cr:
-	@docker-compose -f docker-compose.cr.yml up --build
+	@$($@_compose) up --build
 
-dcshell:
-	@docker exec -it project-dc01 /bin/bash
+%.dcshell:
+	@$($*_compose) exec django /bin/bash
 
-dshell:
-	@docker exec -it project-dc01 python manage.py shell
+%.dshell:
+	@$($*_compose) exec django python manage.py shell
 
-ipshell:
-	@docker exec -it project-dc01 python manage.py shell -i ipython
+%.ipshell:
+	@$($*_compose) exec django python manage.py shell -i ipython
 
-dcattach:
-	@docker attach project-dc01
+%.attach:
+	@docker attach $*
 
-migrate:
-	@docker exec -it project-dc01 python manage.py makemigrations
-	@docker exec -it project-dc01 python manage.py migrate
+%.migrate:
+	@$($*_compose) exec django python manage.py makemigrations
+	@$($*_compose) exec django python manage.py migrate
 
-collectstatic:
-	@docker exec -it project-dc01 python manage.py collectstatic --noinput
+%.collectstatic:
+	@$($*_compose) exec django python manage.py collectstatic --noinput
 
-test:
-	@docker exec -it project-dc01 python manage.py test --settings=config.settings.test
+%.test:
+	@$($*_compose) exec django python manage.py test --settings=config.settings.test
 
-psql:
-	@docker exec -it project-pc01 psql -U postgres
+%.psql:
+	@$($*_compose) exec postgres psql -U postgres
 
-rediscli:
-	@docker exec -it project-rc01 redis-cli -h redis
+%.rediscli:
+	@$($*_compose) exec redis redis-cli -h redis
