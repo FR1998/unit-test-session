@@ -5,11 +5,12 @@ cr_compose     := $(docker_compose) docker-compose.cr.yml
 dev_compose    := $(docker_compose) docker-compose.dev.yml
 stage_compose  := $(docker_compose) docker-compose.stage.yml
 prod_compose   := $(docker_compose) docker-compose.prod.yml
+success        := success
 
-%.all: %.build %.up
-	;
+%.all: %.build %.up.d
+	@echo $(success)
 %.deploy: %.build %.down %.up.d %.migrate %.collectstatic
-	;
+	@echo $(success)
 
 %.build:
 	@$($*_compose) build
