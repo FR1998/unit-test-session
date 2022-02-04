@@ -9,6 +9,12 @@
 * `config/env/*/.postgres`: change `project` with actual project name.
 * `Makefile`: change `project` with actual project name.
 * `config/settings/constance.py`: change `project` with actual project name.
+* `README.md`: change `<username>` and `<repository>` in "Create Issues" URLs.
+
+## Create Issues
+* [create new-feature issue](https://github.com/<username>/<repository>/issues/new?template=new-feature.md)
+* [create enhancement issue](https://github.com/<username>/<repository>/issues/new?template=enhancement.md)
+* [create bug issue](https://github.com/<username>/<repository>/issues/new?template=bug.md)
 
 ## Commands
 ### To add a new package
