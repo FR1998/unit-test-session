@@ -1,5 +1,5 @@
 ---
-- hosts: <host-group>
+- hosts: <host-group-name>
   become: yes
   vars:
     packages:
