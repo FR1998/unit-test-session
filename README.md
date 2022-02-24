@@ -10,6 +10,13 @@
 * `Makefile`: change `project` with actual project name.
 * `config/settings/constance.py`: change `project` with actual project name.
 * `README.md`: change `<username>` and `<repository>` in "Create Issues" URLs.
+* `tasks.yml`: change following in ansible-playbook
+  * `<host-group-name>`: specify host group name
+  * `<repo-url>`: specify repository URL
+  * `<branch-name>`: specify branch name
+  * `<project-dir>`: specify project directory/path to clone into
+  * `<make-target>`: specify target name for `make` command
+  * `<env-name>`: specify environment name
 
 ## Create Issues
 * [create new-feature issue](https://github.com/<username>/<repository>/issues/new?template=new-feature.md)
