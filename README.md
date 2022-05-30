@@ -9,6 +9,7 @@
 * `config/env/*/.postgres`: change `project` with actual project name.
 * `Makefile`: change `project` with actual project name.
 * `config/settings/constance.py`: change `project` with actual project name.
+* `setup.cfg`: change `project` with actual project name.
 * `README.md`: change `<username>` and `<repository>` in "Create Issues" URLs.
 * `tasks.yml`: change following in ansible-playbook
   * `<host-group-name>`: specify host group name
@@ -50,8 +51,9 @@ replace * with appropriate ENV. name
 * `make cr`             : compile requirements
 * `make *.attach`       : attach to specified container
 
-## Pre Commit Hook Activation
-Once requirements are installed, kindly run `pre-commit install`.
+## Pre Commit Hook
+* Install pre-commit package: `pip3 install pre-commit`
+* Activate pre-commit hook: `pre-commit install`
 
 ## Enable SSL with Certbot
 ### (stage|prod)
