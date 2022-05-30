@@ -14,16 +14,6 @@ x-django-build: &django-build
 
 services:
 
-  caddy:
-    image: caddy:2-alpine
-    container_name: project-caddy
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile
-    <<: *common
-
   celery:
     <<: *django-build
     container_name: project-cc01
@@ -64,6 +54,7 @@ services:
       - project_media_volume:/code/media
     depends_on:
       - postgres
+      - redis
     <<: *common
 
   flower:
@@ -72,6 +63,8 @@ services:
     command: [ "flower", "--broker=redis://redis:6379/0", "--broker_api=redis://redis:6379/0", "--port=5555" ]
     ports:
       - 5555:5555
+    depends_on:
+      - redis
     <<: *common
 
   postgres:
