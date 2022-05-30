@@ -55,10 +55,16 @@ Once requirements are installed, kindly run `pre-commit install`.
 
 ## Enable SSL with Certbot
 ### (stage|prod)
-* update `(stage|prod)-init-letsencrypt.sh`
-* update domains
-* by default following command will run in test mode
-  * `sudo ./(stage|prod)-init-letsencrypt.sh`
-* once confirmed update `staging=0` in `(stage|prod)-init-letsencrypt.sh` and then run
-  * `sudo ./(stage|stage)-init-letsencrypt.sh`
-* uncomment lines in `certbot` and `nginx` services in `docker-compose.(stage|prod).py` 
+* update domains in `config/nginx/(stage|prod)/conf.d`
+* run `make (stage|prod).up`
+* run `make (stage|prod).down`
+* uncomment `data` volumes in `docker-compose.(stage|prod).yml` for `certbot` services
+* uncomment `data` volumes in `docker-compose.(stage|prod).yml` for `nginx` services
+* uncomment `acme-challenge` path in `config/nginx/(stage|prod)/conf.d`
+* uncomment ssl configs in `config/nginx/(stage|prod)/conf.d`
+* update domains in `(stage|prod)-init-letsencrypt.sh`
+* run `sudo ./(stage|prod)-init-letsencrypt.sh`, it will fetch dummy certificates
+* update `staging=0` in `(stage|prod)-init-letsencrypt.sh`
+* run `sudo ./(stage|stage)-init-letsencrypt.sh`, it will fetch real certificates
+* uncomment entrypoint in `docker-compose.(stage|prod).yml` for `certbot` service 
+* uncomment command `docker-compose.(stage|prod).yml` for `nginx` service
