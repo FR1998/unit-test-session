@@ -9,6 +9,7 @@
 * `config/env/*/.postgres`: change `project` with actual project name.
 * `Makefile`: change `project` with actual project name.
 * `config/settings/constance.py`: change `project` with actual project name.
+* `setup.cfg`: change `project` with actual project name.
 * `README.md`: change `<username>` and `<repository>` in "Create Issues" URLs.
 * `tasks.yml`: change following in ansible-playbook
   * `<host-group-name>`: specify host group name
