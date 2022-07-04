@@ -1,5 +1,1 @@
 -r base.in
-
-gunicorn==20.1.0
-ipdb==0.13.9
-ipython==7.29.0

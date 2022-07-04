@@ -1,10 +1,6 @@
 -r base.in
 
-autopep8
-django-debug-toolbar
-django-silk
-ipdb==0.13.9
-ipython==7.29.0
-isort
-pylint
-coverage
+django-debug-toolbar==3.5.*
+django-silk==5.0.*
+ipdb==0.13.*
+coverage==6.4.*

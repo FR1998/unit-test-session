@@ -1,25 +1,26 @@
 SHELL=/bin/bash
 
-docker_compose := docker-compose -f
-cr_compose     := $(docker_compose) docker-compose.cr.yml
-dev_compose    := $(docker_compose) docker-compose.dev.yml
-stage_compose  := $(docker_compose) docker-compose.stage.yml
-prod_compose   := $(docker_compose) docker-compose.prod.yml
+
+cr_compose     := docker-compose -f docker-compose.cr.yml
+dev_compose    := docker-compose -f docker-compose.yml -f docker-compose.cert.yml --env-file config/env/.dev
+stage_compose  := docker-compose -f docker-compose.yml -f docker-compose.cert.yml --env-file config/env/.stage
+prod_compose   := docker-compose -f docker-compose.yml -f docker-compose.cert.yml --env-file config/env/.prod
 success        := success
 
 %.all: %.build %.up.d
 	@echo $(success)
+
 %.deploy: %.build %.down %.up.d %.migrate %.collectstatic
 	@echo $(success)
 
 %.build:
 	@$($*_compose) build
 
-%.up.d:
-	@$($*_compose) up -d
-
 %.up:
 	@$($*_compose) up
+
+%.up.d:
+	@$($*_compose) up -d
 
 %.down:
 	@$($*_compose) down --remove-orphans

@@ -24,51 +24,57 @@
     env_name: <env-name>
 
   tasks:
-  - name: Install system packages
-    apt: name={{ packages }} state=latest update_cache=yes
+    - name: Install system packages
+      apt: name={{ packages }} state=latest update_cache=yes
 
-  - name: Add docker gpg key
-    apt_key: url={{ docker_gpg_url }} state=present
+    - name: Add docker gpg key
+      apt_key: url={{ docker_gpg_url }} state=present
 
-  - name: Add docker repository
-    apt_repository: repo={{ docker_repo }} state=present
+    - name: Add docker repository
+      apt_repository: repo={{ docker_repo }} state=present
 
-  - name: Install docker
-    apt: name={{ docker_packges }} state=latest update_cache=yes
-  
-  - name: Install docker compose
-    get_url:
-      url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
-      dest: /usr/local/bin/docker-compose
-      mode: +x
+    - name: Install docker
+      apt: name={{ docker_packges }} state=latest update_cache=yes
 
-  - name: Add user
-    user: 
-      name: '{{ ansible_user }}'
-      groups: docker
-      append: yes
-      generate_ssh_key: yes
-      ssh_key_type: rsa
-      ssh_key_bits: 4096
-      ssh_key_file: .ssh/id_rsa
-      force: no
-    register: user_results
-  
-  - name: Show public ssh key
-    debug: msg={{ user_results.ssh_public_key }}
-  
-  - name: Pull from github
-    git: 
-      repo: '{{ repo_url }}'
-      dest: '{{ project_dir }}'
-      key_file: /home/{{ ansible_user }}/.ssh/id_rsa
-      version: '{{ branch }}'
-  
-  - name: Copy environment files
-    copy: src={{ item.src }} dest={{ item.dest }}
-    with_items:
-      - { src: './config/env/{{ env_name }}/.django', dest: '{{ project_dir }}/config/env/{{ env_name }}/.django' }
-      - { src: './config/env/{{ env_name }}/.postgres', dest: '{{ project_dir }}/config/env/{{ env_name }}/.postgres' } 
-  
-  - name: Deployment
-    make: chdir={{ project_dir }} target={{ make_target }}
+    - name: Install docker compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: +x
+
+    - name: Add user
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+        generate_ssh_key: yes
+        ssh_key_type: rsa
+        ssh_key_bits: 4096
+        ssh_key_file: .ssh/id_rsa
+        force: no
+      register: user_results
+
+    - name: Show public ssh key
+      debug: msg={{ user_results.ssh_public_key }}
+
+    - name: Pull from github
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ project_dir }}"
+        key_file: /home/{{ ansible_user }}/.ssh/id_rsa
+        version: "{{ branch }}"
+
+    - name: Copy environment files
+      copy: src={{ item.src }} dest={{ item.dest }}
+      with_items:
+        - {
+            src: "./config/env/{{ env_name }}/.django",
+            dest: "{{ project_dir }}/config/env/{{ env_name }}/.django",
+          }
+        - {
+            src: "./config/env/{{ env_name }}/.postgres",
+            dest: "{{ project_dir }}/config/env/{{ env_name }}/.postgres",
+          }
+
+    - name: Deployment
+      make: chdir={{ project_dir }} target={{ make_target }}

@@ -1,0 +1,94 @@
+version: "3.4"
+
+x-common: &common
+  stdin_open: true
+  tty: true
+  restart: unless-stopped
+
+x-django-build: &django-build
+  build:
+    context: .
+    args:
+      REQUIREMENT_FILE: $REQUIREMENT_FILE
+      USER: $USER
+
+services:
+  celery:
+    <<: *django-build
+    container_name: ${PROJECT}-cc01
+    command: bash -c "python3 -m celery -A $PROJECT worker -l info"
+    depends_on:
+      - django
+      - redis
+    env_file:
+      - $ENV_FILE
+    volumes:
+      - ./:/home/${USER}/code
+    <<: *common
+
+  celery_beat:
+    <<: *django-build
+    container_name: ${PROJECT}-cb01
+    command: bash -c "python3 -m celery -A $PROJECT beat -l info"
+    depends_on:
+      - django
+      - redis
+    env_file:
+      - $ENV_FILE
+    volumes:
+      - ./:/home/${USER}/code
+    <<: *common
+
+  django:
+    <<: *django-build
+    container_name: ${PROJECT}-dc01
+    command: bash -c "python3 -m gunicorn config.wsgi:application --bind 0.0.0.0:8000 --reload --workers 4"
+    ports:
+      - 8000:8000
+    env_file:
+      - $ENV_FILE
+    volumes:
+      - ./:/home/${USER}/code
+      - ./data/django-static:/code/static
+      - ./data/django-media:/code/media
+      - ~/.gitconfig:/etc/gitconfig
+      - ~/.ssh:/home/${USER}/.ssh:ro
+    depends_on:
+      - postgres
+      - redis
+    <<: *common
+
+  flower:
+    image: mher/flower:0.9.7
+    container_name: ${PROJECT}-fc01
+    command:
+      [
+        "flower",
+        "--broker=redis://redis:6379/0",
+        "--broker_api=redis://redis:6379/0",
+        "--port=5555",
+        "--basic_auth=${FLOWER_USERNAME}:${FLOWER_PASSWORD}",
+      ]
+    ports:
+      - 5555:5555
+    depends_on:
+      - redis
+    <<: *common
+
+  postgres:
+    image: postgres:13.3-buster
+    container_name: ${PROJECT}-pc01
+    env_file:
+      - $ENV_FILE
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data/
+    <<: *common
+
+  redis:
+    image: redis:6.2-buster
+    container_name: ${PROJECT}-rc01
+    volumes:
+      - ./data/redis:/data
+    <<: *common
