@@ -7,7 +7,6 @@
 - `config/settings/base.py`: change `project` with actual project name.
 - `config/env/.(env|stage|prod)`: change `project` with actual project name.
 - `setup.cfg`: change `project` with actual project name.
-- `README.md`: change `<username>` and `<repository>` in "Create Issues" URLs.
 - `tasks.yml`: change following in ansible-playbook
   - `<host-group-name>`: specify host group name
   - `<repo-url>`: specify repository URL
@@ -20,12 +19,6 @@
 
 - Install pre-commit package: `pip3 install pre-commit`
 - Activate pre-commit hook: `pre-commit install`
-
-## Create Issues
-
-- [create new-feature issue](https://github.com/<username>/<repository>/issues/new?template=new-feature.md)
-- [create enhancement issue](https://github.com/<username>/<repository>/issues/new?template=enhancement.md)
-- [create bug issue](https://github.com/<username>/<repository>/issues/new?template=bug.md)
 
 ## Commands
 
