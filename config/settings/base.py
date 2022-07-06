@@ -6,7 +6,6 @@ from project.core.env_utils import get_env_variable
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -14,7 +13,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = get_env_variable("DJANGO_SECRET_KEY")
 
 ALLOWED_HOSTS = get_env_variable("DJANGO_ALLOWED_HOSTS").split(",")
-
 
 # Application definition
 
@@ -40,7 +38,6 @@ CUSTOM_APPS = ["project.core", "project.users"]
 
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
 
-
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -50,6 +47,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "project.core.middleware.logging.LoggingMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -74,7 +72,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -88,7 +85,6 @@ DATABASES = {
         "PORT": get_env_variable("DB_PORT"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -108,7 +104,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -121,7 +116,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -136,6 +130,48 @@ MEDIA_URL = "/django-media/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": True,
+    "formatters": {
+        "simple": {
+            "format": "{asctime} {levelname} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "file": {
+            "level": "INFO",
+            "class": "project.core.logging.handler.LoggingHandler",
+            "filename": BASE_DIR / "data/debug.log",
+            "formatter": "simple",
+            "backupCount": 10,
+            "maxBytes": 1 * 1024 * 1024,  # 1 MB
+        },
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": [
+                "file",
+                "console",
+            ],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "project": {
+            "handlers": [
+                "file",
+                "console",
+            ],
+            "level": "INFO",
+        },
+    },
+}
 
 REDIS_HOST = get_env_variable("REDIS_HOST")
 REDIS_PORT = get_env_variable("REDIS_PORT")
