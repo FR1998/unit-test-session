@@ -3,4 +3,3 @@
 django-debug-toolbar==3.5.*
 django-silk==5.0.*
 ipdb==0.13.*
-coverage==6.4.*
