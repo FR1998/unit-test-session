@@ -15,7 +15,6 @@ x-django-build: &django-build
 services:
   celery:
     <<: *django-build
-    container_name: ${PROJECT}-cc01
     command: bash -c "python3 -m celery -A $PROJECT worker -l info"
     depends_on:
       - django
@@ -24,12 +23,12 @@ services:
       - $ENV_FILE
     volumes:
       - ./:/home/${USER}/code
+      - ./data/django-media:/code/media
     <<: *common
 
   celery_beat:
     <<: *django-build
-    container_name: ${PROJECT}-cb01
-    command: bash -c "python3 -m celery -A $PROJECT beat -l info"
+    command: bash -c "python3 -m celery -A $PROJECT beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     depends_on:
       - django
       - redis
@@ -37,14 +36,14 @@ services:
       - $ENV_FILE
     volumes:
       - ./:/home/${USER}/code
+      - ./data/django-media:/code/media
     <<: *common
 
   django:
     <<: *django-build
-    container_name: ${PROJECT}-dc01
-    command: bash -c "python3 -m gunicorn config.wsgi:application --bind 0.0.0.0:8000 --reload --workers 4"
+    command: bash -c "python3 manage.py runserver 0.0.0.0:8000"
     ports:
-      - 8000:8000
+      - "8000:8000"
     env_file:
       - $ENV_FILE
     volumes:
@@ -60,35 +59,27 @@ services:
 
   flower:
     image: mher/flower:0.9.7
-    container_name: ${PROJECT}-fc01
-    command:
-      [
-        "flower",
-        "--broker=redis://redis:6379/0",
-        "--broker_api=redis://redis:6379/0",
-        "--port=5555",
-        "--basic_auth=${FLOWER_USERNAME}:${FLOWER_PASSWORD}",
-      ]
+    command: bash -c "python3 -m celery -A $PROJECT --broker=$REDIS_URL/0 flower --url_prefix=flower --basic_auth=$FLOWER_USERNAME:$FLOWER_PASSWORD"
     ports:
-      - 5555:5555
+      - "5555:5555"
     depends_on:
       - redis
     <<: *common
 
   postgres:
     image: postgres:13.3-buster
-    container_name: ${PROJECT}-pc01
     env_file:
       - $ENV_FILE
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data/
     <<: *common
 
   redis:
     image: redis:6.2-buster
-    container_name: ${PROJECT}-rc01
+    ports:
+      - "6379:6379"
     volumes:
       - ./data/redis:/data
     <<: *common

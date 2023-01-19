@@ -173,11 +173,10 @@ LOGGING = {
     },
 }
 
-REDIS_HOST = get_env_variable("REDIS_HOST")
-REDIS_PORT = get_env_variable("REDIS_PORT")
+REDIS_URL = get_env_variable("REDIS_URL")
 
-CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"
-CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}"
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_ACCEPT_CONTENT = [
     "application/json",
 ]
@@ -187,7 +186,7 @@ CELERY_RESULT_SERIALIZER = "json"
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",
+        "LOCATION": f"{REDIS_URL}/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -197,7 +196,7 @@ CACHES = {
 CORS_ORIGIN_ALLOW_ALL = True
 
 CONSTANCE_BACKEND = "constance.backends.redisd.RedisBackend"
-CONSTANCE_REDIS_CONNECTION = f"{REDIS_HOST}://{REDIS_HOST}:{REDIS_PORT}/0"
+CONSTANCE_REDIS_CONNECTION = f"{REDIS_URL}/0"
 CONSTANCE_REDIS_PREFIX = "constance:project:"
 
 from .constance import *  # noqa

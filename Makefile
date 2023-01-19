@@ -2,10 +2,10 @@ SHELL=/bin/bash
 
 
 cr_compose     := docker-compose -f docker-compose.cr.yml
-dev_compose    := docker-compose -f docker-compose.yml -f docker-compose.cert.yml --env-file config/env/.dev
-stage_compose  := docker-compose -f docker-compose.yml -f docker-compose.cert.yml --env-file config/env/.stage
-prod_compose   := docker-compose -f docker-compose.yml -f docker-compose.cert.yml --env-file config/env/.prod
-test_compose   := docker-compose -f docker-compose.yml --env-file config/env/.test
+dev_compose    := docker-compose -f docker-compose.dev.yml --env-file config/env/.dev
+stage_compose  := docker-compose -f docker-compose.stage.yml --env-file config/env/.stage
+prod_compose   := docker-compose -f docker-compose.prod.yml --env-file config/env/.prod
+test_compose   := docker-compose -f docker-compose.test.yml --env-file config/env/.test
 success        := success
 
 %.all: %.build %.up.d
@@ -58,7 +58,7 @@ test:
 	@$($@_compose) up --build -d django
 	@$($@_compose) exec -T django python manage.py migrate
 	@$($@_compose) exec -T django python manage.py collectstatic --no-input
-	@$($@_compose) exec -T django python -m coverage run --source='.' manage.py test --settings=config.settings.test --no-input
+	@$($@_compose) exec -T django python -m coverage run --source='.' manage.py test --no-input
 	@$($@_compose) exec -T django python -m coverage html -d ./data/htmlcov
 	@$($@_compose) down --remove-orphans
 

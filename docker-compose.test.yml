@@ -1,0 +1,47 @@
+version: "3.4"
+
+x-common: &common
+  stdin_open: true
+  tty: true
+  restart: unless-stopped
+
+x-django-build: &django-build
+  build:
+    context: .
+    args:
+      REQUIREMENT_FILE: $REQUIREMENT_FILE
+      USER: $USER
+
+services:
+  django:
+    <<: *django-build
+    env_file:
+      - $ENV_FILE
+    volumes:
+      - ./:/home/${USER}/code
+      - ./data/django-static:/code/static
+      - ./data/django-media:/code/media
+      - ~/.gitconfig:/etc/gitconfig
+      - ~/.ssh:/home/${USER}/.ssh:ro
+    depends_on:
+      - postgres
+      - redis
+    <<: *common
+
+  postgres:
+    image: postgres:13.3-buster
+    env_file:
+      - $ENV_FILE
+    ports:
+      - "5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data/
+    <<: *common
+
+  redis:
+    image: redis:6.2-buster
+    ports:
+      - "6379"
+    volumes:
+      - ./data/redis:/data
+    <<: *common

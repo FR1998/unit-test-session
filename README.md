@@ -55,17 +55,17 @@ replace \* with appropriate ENV. name
 ## Enable SSL with Certbot
 
 ### (stage|prod)
-
-- update domains in `config/nginx/conf.(stage|prod)`
-- run `make (stage|prod).up`
-- run `make (stage|prod).down`
-- uncomment `certbot` service in `docker-compose.cert.yml`
-- uncomment `./data/certbot` volumes in `docker-compose.cert.yml` for `nginx` service
-- uncomment `acme-challenge` path in `config/nginx/conf.(stage|prod)`
-- uncomment ssl configs in `config/nginx/conf.(stage|prod)`
-- update domains in `init-letsencrypt.sh`
-- run `sudo ./init-letsencrypt.sh`, it will fetch dummy certificates
-- update `staging=0` in `init-letsencrypt.sh`
-- run `sudo ./init-letsencrypt.sh`, it will fetch real certificates
-- uncomment `entrypoint` in `docker-compose.cert.yml` for `certbot` service
-- uncomment `command` in `docker-compose.cert.yml` for `nginx` service
+1. update domain in `config/nginx/(stage|prod).conf`
+ - `sed -I '' 's/example.org/<domain>/g' (stage|prod).conf`
+2. run `make (stage|prod).up.d`
+3. run `make (stage|prod).down`
+4. uncomment `./data/certbot` volumes in `docker-compose.(stage|prod).yml` for `nginx` service
+  - `sed -I '' 's/^#//g' docker-compose.(stage|prod).yml`
+5.uncomment ssl configs in `config/nginx/(stage|prod).conf`
+  - `sed -I '' 's/^#//g' (stage|prod).conf`
+6. specify domain, mode, and compose file for `init-letsencrypt.sh`
+  - `sudo ./init-letsencrypt.sh <domain> <mode> <docker-compose-file>`
+  - `sudo ./init-letsencrypt.sh example.org 1 docker-compose.stage.yml` will fetch dummy certificates for example.org
+  - `sudo ./init-letsencrypt.sh example.org 0 docker-compose.stage.yml` will fetch real certificates for example.org
+7. uncomment `entrypoint` in `docker-compose.(stage|prod).yml` for `certbot` service and `command` in `docker-compose.(stage|prod).yml` for `nginx` service
+  - `sed -I '' 's/^#//g' docker-compose.(stage|prod).yml`
