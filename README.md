@@ -7,6 +7,7 @@
 - `config/settings/base.py`: change `project` with actual project name.
 - `config/env/.(env|stage|prod)`: change `project` with actual project name.
 - `setup.cfg`: change `project` with actual project name.
+- `pyproject.toml`: change `project` with actual project name.
 - `tasks.yml`: change following in ansible-playbook
   - `<host-group-name>`: specify host group name
   - `<repo-url>`: specify repository URL
@@ -15,6 +16,12 @@
   - `<make-target>`: specify target name for `make` command
   - `<env-name>`: specify environment name
 - `README.md`: remove section "Required Changes"
+
+### Environment Setup
+
+- Copy ENV file `cp config/env/.env.example .env`
+- Update env variables
+
 ### Pre Commit Hook
 
 - Install pre-commit package: `pip3 install pre-commit`
@@ -31,7 +38,6 @@
 
 replace \* with appropriate ENV. name
 
-- `make *.setup` : build and start containers
 - `make *.build` : build containers
 - `make *.up.d` : start containers in detached mode
 - `make *.up` : start containers in attached mode
@@ -43,13 +49,13 @@ replace \* with appropriate ENV. name
 - `make *.ipshell` : open django ipython shell
 - `make *.migrate` : run `makemigrations and migrate` command in django container
 - `make *.collectstatic`: run `collectstatic` command in django container
-- `make *.test` : run `test` command in django container
 - `make *.psql` : run `psql` in postgres container
 - `make *.rediscli` : run `redis cli` in redis container
 
 ### Common Commands
 
 - `make cr` : compile requirements
+- `make test` : run Django tests
 - `make *.attach` : attach to specified container
 
 ## Enable SSL with Certbot

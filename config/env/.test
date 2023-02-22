@@ -1,15 +1,15 @@
 ########## DOCKER
 PROJECT=project
-REQUIREMENT_FILE=config/requirements/dev.txt
+REQUIREMENT_FILE=config/requirements/test.txt
 REDIS_URL=redis://redis:6379
 FLOWER_USERNAME=admin
 FLOWER_PASSWORD=admin
 
 ########## DJANGO
-ENV=dev
+ENV=test
 
 DJANGO_ALLOWED_HOSTS=*
-DJANGO_SETTINGS_MODULE=config.settings.dev
+DJANGO_SETTINGS_MODULE=config.settings.test
 DJANGO_SECRET_KEY=django-insecure-b7pm_x4%gn-rraf#zi9^1!6v0eucuz2-33mkypju-gli^uwv&+
 DJANGO_SENTRY_DSN=
 
