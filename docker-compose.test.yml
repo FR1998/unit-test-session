@@ -10,19 +10,16 @@ x-django-build: &django-build
     context: .
     args:
       REQUIREMENT_FILE: $REQUIREMENT_FILE
-      USER: $USER
 
 services:
   django:
     <<: *django-build
     env_file:
-      - $ENV_FILE
+      - ./config/env/.test
     volumes:
-      - ./:/home/${USER}/code
-      - ./data/django-static:/code/static
-      - ./data/django-media:/code/media
-      - ~/.gitconfig:/etc/gitconfig
-      - ~/.ssh:/home/${USER}/.ssh:ro
+      - ./:/code
+      - project_static_volume:/code/static
+      - project_media_volume:/code/media
     depends_on:
       - postgres
       - redis
@@ -31,11 +28,11 @@ services:
   postgres:
     image: postgres:13.3-buster
     env_file:
-      - $ENV_FILE
+      - ./config/env/.test
     ports:
       - "5432"
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data/
+      - project_postgres_data:/var/lib/postgresql/data/
     <<: *common
 
   redis:
@@ -43,5 +40,11 @@ services:
     ports:
       - "6379"
     volumes:
-      - ./data/redis:/data
+      - project_redis_data:/data
     <<: *common
+
+volumes:
+  project_postgres_data:
+  project_redis_data:
+  project_static_volume:
+  project_media_volume:

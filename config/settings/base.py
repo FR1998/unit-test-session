@@ -144,7 +144,7 @@ LOGGING = {
         "file": {
             "level": "INFO",
             "class": "project.core.logging.handler.LoggingHandler",
-            "filename": BASE_DIR / "data/debug.log",
+            "filename": BASE_DIR / "debug.log",
             "formatter": "simple",
             "backupCount": 10,
             "maxBytes": 1 * 1024 * 1024,  # 1 MB

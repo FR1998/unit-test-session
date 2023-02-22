@@ -1,11 +1,11 @@
 SHELL=/bin/bash
 
 
-cr_compose     := docker-compose -f docker-compose.cr.yml
-dev_compose    := docker-compose -f docker-compose.dev.yml --env-file config/env/.dev
-stage_compose  := docker-compose -f docker-compose.stage.yml --env-file config/env/.stage
-prod_compose   := docker-compose -f docker-compose.prod.yml --env-file config/env/.prod
-test_compose   := docker-compose -f docker-compose.test.yml --env-file config/env/.test
+cr_compose     := docker compose -f docker-compose.cr.yml
+dev_compose    := docker compose -f docker-compose.dev.yml --env-file config/env/.dev
+stage_compose  := docker compose -f docker-compose.stage.yml --env-file config/env/.stage
+prod_compose   := docker compose -f docker-compose.prod.yml --env-file config/env/.prod
+test_compose   := docker compose -f docker-compose.test.yml --env-file config/env/.test
 success        := success
 
 %.all: %.build %.up.d
@@ -44,11 +44,16 @@ cr:
 %.ipshell:
 	@$($*_compose) exec django python manage.py shell -i ipython
 
+%.sp:
+	@$($*_compose) exec django python manage.py shell_plus
+
 %.attach:
 	@docker attach $*
 
-%.migrate:
+%.makemigrations:
 	@$($*_compose) exec django python manage.py makemigrations
+
+%.migrate:
 	@$($*_compose) exec django python manage.py migrate
 
 %.collectstatic:
