@@ -4,8 +4,10 @@
 
 - `project/`: change `project` with actual project name.
 - `project/celery.py`: change `project` with actual project name.
+- `project/core/middleware/logging.py`: change `project` with actual project name.
 - `config/settings/base.py`: change `project` with actual project name.
-- `config/env/.(env|stage|prod)`: change `project` with actual project name.
+- `config/settings/sentry.py`: change `project` with actual project name.
+- `config/env/.env.example`: change `project` with actual project name.
 - `setup.cfg`: change `project` with actual project name.
 - `pyproject.toml`: change `project` with actual project name.
 - `tasks.yml`: change following in ansible-playbook
@@ -47,7 +49,8 @@ replace \* with appropriate ENV. name
 - `make *.dcshell` : open django container shell
 - `make *.dshell` : open django shell
 - `make *.ipshell` : open django ipython shell
-- `make *.migrate` : run `makemigrations and migrate` command in django container
+- `make *.makemigrations` : run `makemigrations` command in django container
+- `make *.migrate` : run `migrate` command in django container
 - `make *.collectstatic`: run `collectstatic` command in django container
 - `make *.psql` : run `psql` in postgres container
 - `make *.rediscli` : run `redis cli` in redis container

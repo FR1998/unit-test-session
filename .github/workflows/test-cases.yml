@@ -3,7 +3,7 @@ name: test-cases
 on:
   push:
     branches:
-      - dev
+      - develop
       - main
 
 jobs:
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: make dev.test
+      - run: make test
       - uses: actions/upload-artifact@v2
         with:
           name: django-coverage-report

@@ -3,20 +3,10 @@ import logging
 from copy import deepcopy
 from uuid import uuid4
 
+from ipware import get_client_ip
+
 
 logger = logging.getLogger("project")
-
-
-def get_client_ip_address(request_metadata):
-    client_ip_addresses = {
-        "HTTP_X_FORWARDED_FOR": request_metadata.get("HTTP_X_FORWARDED_FOR"),
-        "X_FORWARDED_FOR": request_metadata.get("X_FORWARDED_FOR"),
-        "X-Original-Forwarded-For": request_metadata.get("X-Original-Forwarded-For"),
-        "X-Real-Ip": request_metadata.get("X-Real-Ip"),
-        "REMOTE_ADDR": request_metadata.get("REMOTE_ADDR"),
-    }
-
-    return client_ip_addresses
 
 
 class LoggingMiddleware:
@@ -29,7 +19,7 @@ class LoggingMiddleware:
             "request_method": request.method,
             "http_referer": request.META.get("HTTP_REFERER", ""),
             "http_user_agent": request.META.get("HTTP_USER_AGENT", ""),
-            "ip_address": get_client_ip_address(request.META),
+            "ip_address": get_client_ip(request)[0],
             "status_code": None,
         }
 
@@ -39,7 +29,7 @@ class LoggingMiddleware:
         response = self.get_response(request)
 
         response_body = "-"
-        if "application/json" in response.get("content-type", ""):
+        if "application/json" in response.get("content-type", "") and hasattr(response, "data"):
             response_body = deepcopy(response.data)
 
         status_code = response.status_code

@@ -64,7 +64,7 @@ test:
 	@$($@_compose) exec -T django python manage.py migrate
 	@$($@_compose) exec -T django python manage.py collectstatic --no-input
 	@$($@_compose) exec -T django python -m coverage run --source='.' manage.py test --no-input
-	@$($@_compose) exec -T django python -m coverage html -d ./data/htmlcov
+	@$($@_compose) exec -T django python -m coverage html -d htmlcov
 	@$($@_compose) down --remove-orphans
 
 %.psql:
