@@ -2,9 +2,9 @@ SHELL=/bin/bash
 
 
 cr_compose     := docker compose -f docker-compose.cr.yml
-dev_compose    := docker compose -f docker-compose.dev.yml --env-file config/env/.dev
-stage_compose  := docker compose -f docker-compose.stage.yml --env-file config/env/.stage
-prod_compose   := docker compose -f docker-compose.prod.yml --env-file config/env/.prod
+dev_compose    := docker compose -f docker-compose.dev.yml
+stage_compose  := docker compose -f docker-compose.stage.yml
+prod_compose   := docker compose -f docker-compose.prod.yml
 test_compose   := docker compose -f docker-compose.test.yml --env-file config/env/.test
 success        := success
 
