@@ -5,6 +5,8 @@
 - `project/`: change `project` with actual project name.
 - `project/celery.py`: change `project` with actual project name.
 - `project/core/middleware/logging.py`: change `project` with actual project name.
+- `project/core/apps.py`: change `project` with actual project name.
+- `project/users/apps.py`: change `project` with actual project name.
 - `config/settings/base.py`: change `project` with actual project name.
 - `config/settings/sentry.py`: change `project` with actual project name.
 - `config/env/.env.example`: change `project` with actual project name.
