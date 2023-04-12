@@ -4,10 +4,9 @@ from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
-from project.core.env_utils import get_env_variable
+from decouple import config
 
-
-SENTRY_DSN = get_env_variable("DJANGO_SENTRY_DSN")
+SENTRY_DSN = config("DJANGO_SENTRY_DSN")
 
 if SENTRY_DSN:
     sentry_sdk.init(
@@ -26,5 +25,5 @@ if SENTRY_DSN:
         # something more human-readable.
         # release="myapp@1.0.0",
         attach_stacktrace=True,
-        environment=get_env_variable("ENV"),
+        environment=config("ENV", default="DEV"),
     )
