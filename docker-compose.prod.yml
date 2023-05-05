@@ -13,7 +13,7 @@ x-django-build: &django-build
 
 services:
   celery:
-    <<: *django-build
+    <<: [*django-build, *common]
     command: bash -c "celery -A $PROJECT worker -l info"
     depends_on:
       - django
@@ -23,10 +23,9 @@ services:
     volumes:
       - ./:/code
       - project_media_volume:/code/media
-    <<: *common
 
   celery_beat:
-    <<: *django-build
+    <<: [*django-build, *common]
     command: bash -c "celery -A $PROJECT beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     depends_on:
       - django
@@ -36,7 +35,6 @@ services:
     volumes:
       - ./:/code
       - project_media_volume:/code/media
-    <<: *common
 
   certbot:
     image: certbot/certbot
@@ -47,7 +45,7 @@ services:
     <<: *common
 
   django:
-    <<: *django-build
+    <<: [*django-build, *common]
     command: bash -c "python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000"
@@ -60,10 +58,9 @@ services:
     depends_on:
       - postgres
       - redis
-    <<: *common
 
   flower:
-    <<: *django-build
+    <<: [*django-build, *common]
     command: bash -c "celery -A $PROJECT --broker=${REDIS_URL}/0 flower --url_prefix=flower --basic_auth=${FLOWER_USERNAME}:${FLOWER_PASSWORD}"
     ports:
       - "5555"
@@ -74,7 +71,6 @@ services:
       - .env
     volumes:
       - .:/code/
-    <<: *common
 
   nginx:
     image: nginx:1.20.1

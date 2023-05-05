@@ -13,7 +13,7 @@ x-django-build: &django-build
 
 services:
   django:
-    <<: *django-build
+    <<: [*django-build, *common]
     env_file:
       - ./config/env/.test
     volumes:
@@ -23,7 +23,6 @@ services:
     depends_on:
       - postgres
       - redis
-    <<: *common
 
   postgres:
     image: postgres:13.3-buster
