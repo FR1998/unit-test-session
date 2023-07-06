@@ -53,7 +53,7 @@ services:
 
   flower:
     <<: [*django-build, *common]
-    command: bash -c "celery -A $PROJECT --broker=${REDIS_URL}/0 flower --url_prefix=flower --basic_auth=${FLOWER_USERNAME}:${FLOWER_PASSWORD}"
+    command: bash -c "celery -A $PROJECT flower --conf=/code/config/settings/flowerconfig.py"
     ports:
       - "5555:5555"
     depends_on:

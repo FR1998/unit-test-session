@@ -199,5 +199,6 @@ CONSTANCE_BACKEND = "constance.backends.redisd.RedisBackend"
 CONSTANCE_REDIS_CONNECTION = f"{REDIS_URL}/0"
 CONSTANCE_REDIS_PREFIX = "constance:project:"
 
+
 from .constance import *  # noqa
 from .sentry import *  # noqa
