@@ -5,7 +5,6 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile.cr
-    container_name: project-cr01
     command: bash -c "/code/scripts/cr.sh"
     volumes:
       - ./:/code
