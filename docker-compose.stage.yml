@@ -79,7 +79,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./config/nginx/stage.conf:/etc/nginx/conf.d/stage.conf
+      - ./config/nginx/stage.conf:/etc/nginx/conf.d/default.conf
       - project_static_volume:/code/static
       - project_media_volume:/code/media
     #      - ./data/certbot/conf:/etc/letsencrypt
