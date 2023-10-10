@@ -25,7 +25,7 @@ services:
       - redis
 
   postgres:
-    image: postgres:13.3-buster
+    image: postgres:15.4-bookworm
     env_file:
       - ./config/env/.test
     ports:
