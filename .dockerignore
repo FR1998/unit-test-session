@@ -36,3 +36,6 @@ Makefile
 .coveragerc
 .gitignore
 .pre-commit-config.yaml
+debug.log
+celerybeat-schedule
+htmlcov

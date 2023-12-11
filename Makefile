@@ -38,12 +38,6 @@ cr:
 %.dcshell:
 	@$($*_compose) exec django /bin/bash
 
-%.dshell:
-	@$($*_compose) exec django python manage.py shell
-
-%.ipshell:
-	@$($*_compose) exec django python manage.py shell -i ipython
-
 %.sp:
 	@$($*_compose) exec django python manage.py shell_plus
 

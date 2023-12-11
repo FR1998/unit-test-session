@@ -1,4 +1,4 @@
-FROM node:16-buster as builder
+FROM node:18-bookworm as builder
 WORKDIR /app
 COPY ./frontend/ ./
 RUN npm install && npm run build

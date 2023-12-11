@@ -22,7 +22,7 @@ services:
       - .env
     volumes:
       - ./:/code
-      - project_media_volume:/code/media
+      - ${PROJECT}_media_volume:/code/media
 
   celery_beat:
     <<: [*django-build, *common]
@@ -34,7 +34,7 @@ services:
       - .env
     volumes:
       - ./:/code
-      - project_media_volume:/code/media
+      - ${PROJECT}_media_volume:/code/media
 
   django:
     <<: [*django-build, *common]
@@ -45,8 +45,8 @@ services:
       - .env
     volumes:
       - ./:/code
-      - project_static_volume:/code/static
-      - project_media_volume:/code/media
+      - ${PROJECT}_static_volume:/code/static
+      - ${PROJECT}_media_volume:/code/media
     depends_on:
       - postgres
       - redis
@@ -71,15 +71,15 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - project_postgres_data:/var/lib/postgresql/data/
+      - ${PROJECT}_postgres_data:/var/lib/postgresql/data/
     <<: *common
 
   redis:
-    image: redis:6.2-buster
+    image: redis:7.2-bookworm
     ports:
       - "6379:6379"
     volumes:
-      - project_redis_data:/data
+      - ${PROJECT}_redis_data:/data
     <<: *common
 
 volumes:

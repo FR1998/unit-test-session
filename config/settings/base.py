@@ -1,6 +1,7 @@
+from datetime import timedelta
 from pathlib import Path
 
-from decouple import config, Csv
+from decouple import Csv, config
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,15 +24,31 @@ DEFAULT_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
 ]
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "dj_rest_auth",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    "dj_rest_auth.registration",
     "django_celery_beat",
+    "django_celery_results",
     "drf_yasg",
     "corsheaders",
     "constance",
     "django_extensions",
+    "django_filters",
+    "health_check",
+    "health_check.db",
+    "health_check.cache",
+    "health_check.contrib.migrations",
+    "health_check.contrib.celery",
+    "health_check.contrib.celery_ping",
+    "health_check.contrib.redis",
 ]
 
 CUSTOM_APPS = ["project.core", "project.users"]
@@ -57,7 +74,7 @@ AUTH_USER_MODEL = "users.User"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "project/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -94,13 +111,10 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "project.users.password_validation.PasswordValidator",
     },
 ]
 
@@ -176,7 +190,7 @@ LOGGING = {
 REDIS_URL = config("REDIS_URL")
 
 CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
+CELERY_RESULT_BACKEND = "django-db"
 CELERY_ACCEPT_CONTENT = [
     "application/json",
 ]
@@ -193,12 +207,55 @@ CACHES = {
     }
 }
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 CONSTANCE_BACKEND = "constance.backends.redisd.RedisBackend"
 CONSTANCE_REDIS_CONNECTION = f"{REDIS_URL}/0"
 CONSTANCE_REDIS_PREFIX = "constance:project:"
 
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {"api_key": {"type": "apiKey", "in": "header", "name": "Authorization"}},
+}
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
+    ],
+    "DEFAULT_PAGINATION_CLASS": "project.core.paginations.PageNumberPagination",
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=int(config("ACCESS_TOKEN_LIFETIME_IN_SECS", cast=int))),
+    "REFRESH_TOKEN_LIFETIME": timedelta(seconds=int(config("REFRESH_TOKEN_LIFETIME_IN_SECS", cast=int))),
+}
+
+SITE_ID = 1
+
+REST_AUTH = {
+    "REGISTER_SERIALIZER": "project.users.api.v1.serializers.RegisterSerializer",
+    "USER_DETAILS_SERIALIZER": "project.users.api.v1.serializers.UserDetailsSerializer",
+    "TOKEN_MODEL": None,
+    "USE_JWT": True,
+    "JWT_AUTH_HTTPONLY": False,
+}
+
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "[Project] "
+
+if config("ENABLE_OTP", cast=bool):
+    ACCOUNT_ADAPTER = "project.users.adapter.DefaultAccountAdapter"
+    ACCOUNT_EMAIL_CONFIRMATION_HMAC = False
 
 from .constance import *  # noqa
-from .sentry import *  # noqa

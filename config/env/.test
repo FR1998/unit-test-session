@@ -1,12 +1,10 @@
 ########## DOCKER
 PROJECT=project
 REQUIREMENT_FILE=config/requirements/test.txt
-REDIS_URL=redis://redis:6379
-FLOWER_USERNAME=admin
-FLOWER_PASSWORD=admin
 
 ########## DJANGO
 ENV=test
+BASE_URL=http://localhost:8000
 
 DJANGO_ALLOWED_HOSTS=*
 DJANGO_SETTINGS_MODULE=config.settings.test
@@ -21,6 +19,12 @@ DB_NAME=project
 DB_PORT=5432
 
 REDIS_URL=redis://redis:6379
+
+FLOWER_USERNAME=admin
+FLOWER_PASSWORD=admin
+
+ACCESS_TOKEN_LIFETIME_IN_SECS=300
+REFRESH_TOKEN_LIFETIME_IN_SECS=86400
 
 ########## POSTGRES
 POSTGRES_USER=postgres
