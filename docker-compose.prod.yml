@@ -80,6 +80,8 @@ services:
     depends_on:
       - django
       - flower
+    env_file:
+      - .env
     #    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     <<: *common
 
