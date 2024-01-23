@@ -34,6 +34,7 @@ success        := success
 
 cr:
 	@$($@_compose) up --build
+	@$($@_compose) down
 
 %.dcshell:
 	@$($*_compose) exec django /bin/bash

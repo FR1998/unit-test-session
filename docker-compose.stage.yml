@@ -14,7 +14,7 @@ x-django-build: &django-build
 services:
   celery:
     <<: [*django-build, *common]
-    command: bash -c "celery -A $PROJECT worker -l info"
+    command: bash -c "NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program celery -A $PROJECT worker -l info"
     depends_on:
       - django
       - redis
@@ -26,7 +26,7 @@ services:
 
   celery_beat:
     <<: [*django-build, *common]
-    command: bash -c "celery -A $PROJECT beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    command: bash -c "NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program celery -A $PROJECT beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     depends_on:
       - django
       - redis
@@ -46,7 +46,7 @@ services:
 
   django:
     <<: [*django-build, *common]
-    command: bash -c "gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers $GUNICORN_WORKERS --worker-class gthread --threads $GUNICORN_THREADS"
+    command: bash -c "NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers $GUNICORN_WORKERS --worker-class gthread --threads $GUNICORN_THREADS"
     ports:
       - "8000"
     env_file:
@@ -61,7 +61,7 @@ services:
 
   flower:
     <<: [*django-build, *common]
-    command: bash -c "celery -A $PROJECT flower --conf=/code/config/settings/flowerconfig.py"
+    command: bash -c "NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program celery -A $PROJECT flower --conf=/code/config/settings/flowerconfig.py"
     ports:
       - "5555"
     depends_on:
@@ -71,6 +71,19 @@ services:
       - .env
     volumes:
       - .:/code/
+
+  newrelic:
+    image: newrelic/infrastructure:latest
+    cap_add:
+      - SYS_PTRACE
+    network_mode: host
+    pid: host
+    privileged: true
+    volumes:
+      - "/:/host:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      NRIA_LICENSE_KEY: $NRIA_LICENSE_KEY
 
   nginx:
     image: nginx:1.20.1

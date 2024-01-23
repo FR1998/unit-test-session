@@ -1,7 +1,7 @@
-FROM node:18-bookworm as builder
+FROM node:20-bookworm as builder
 WORKDIR /app
 COPY ./frontend/ ./
-RUN npm install && npm run build
+RUN yarn install && yarn build
 
 FROM nginx:1.20.1
 COPY --from=builder /app/dist /etc/nginx/html/
