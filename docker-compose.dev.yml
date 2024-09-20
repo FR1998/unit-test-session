@@ -14,7 +14,7 @@ x-django-build: &django-build
 services:
   celery:
     <<: [*django-build, *common]
-    command: bash -c "celery -A $PROJECT worker -l info"
+    command: bash -c "celery -A e_commerce worker -l info"
     depends_on:
       - django
       - redis
@@ -22,11 +22,11 @@ services:
       - .env
     volumes:
       - ./:/code
-      - ${PROJECT}_media_volume:/code/media
+      - e_commerce_media_volume:/code/media
 
   celery_beat:
     <<: [*django-build, *common]
-    command: bash -c "celery -A $PROJECT beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    command: bash -c "celery -A e_commerce beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     depends_on:
       - django
       - redis
@@ -34,7 +34,7 @@ services:
       - .env
     volumes:
       - ./:/code
-      - ${PROJECT}_media_volume:/code/media
+      - e_commerce_media_volume:/code/media
 
   django:
     <<: [*django-build, *common]
@@ -45,15 +45,15 @@ services:
       - .env
     volumes:
       - ./:/code
-      - ${PROJECT}_static_volume:/code/static
-      - ${PROJECT}_media_volume:/code/media
+      - e_commerce_static_volume:/code/static
+      - e_commerce_media_volume:/code/media
     depends_on:
       - postgres
       - redis
 
   flower:
     <<: [*django-build, *common]
-    command: bash -c "celery -A $PROJECT flower --conf=/code/config/settings/flowerconfig.py"
+    command: bash -c "celery -A e_commerce flower --conf=/code/config/settings/flowerconfig.py"
     ports:
       - "5555:5555"
     depends_on:
@@ -71,7 +71,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ${PROJECT}_postgres_data:/var/lib/postgresql/data/
+      - e_commerce_postgres_data:/var/lib/postgresql/data/
     <<: *common
 
   redis:
@@ -79,11 +79,11 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ${PROJECT}_redis_data:/data
+      - e_commerce_redis_data:/data
     <<: *common
 
 volumes:
-  project_postgres_data:
-  project_redis_data:
-  project_static_volume:
-  project_media_volume:
+  e_commerce_postgres_data:
+  e_commerce_redis_data:
+  e_commerce_static_volume:
+  e_commerce_media_volume:

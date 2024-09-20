@@ -19,3 +19,4 @@ djangorestframework-simplejwt==5.3.*
 factory-boy==3.3.*
 django-health-check==3.17.*
 django-fsm==2.8.*
+pillow==10.4.*

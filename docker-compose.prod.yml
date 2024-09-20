@@ -14,7 +14,7 @@ x-django-build: &django-build
 services:
   celery:
     <<: [*django-build, *common]
-    command: bash -c "NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program celery -A $PROJECT worker -l info"
+    command: bash -c "NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program celery -A e_commerce worker -l info"
     depends_on:
       - django
     env_file:
@@ -24,7 +24,7 @@ services:
 
   celery_beat:
     <<: [*django-build, *common]
-    command: bash -c "NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program celery -A $PROJECT beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    command: bash -c "NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program celery -A e_commerce beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     depends_on:
       - django
     env_file:
@@ -52,7 +52,7 @@ services:
 
   flower:
     <<: [*django-build, *common]
-    command: bash -c "NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program celery -A $PROJECT flower --conf=/code/config/settings/flowerconfig.py"
+    command: bash -c "NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program celery -A e_commerce flower --conf=/code/config/settings/flowerconfig.py"
     ports:
       - "5555"
     depends_on:
