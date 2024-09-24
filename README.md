@@ -10,7 +10,7 @@
 - `make dev.build`: build containers
 - `make dev.up`: start containers in attached mode
 - `make dev.migrate`: run `migrate` command in django container
-- `make *.down` : stop containers and remove networks
+- `make dev.down` : stop containers and remove networks
 
 ### Run Test Case
 - `make test` : run Django tests
