@@ -13,4 +13,34 @@
 - `make dev.down` : stop containers and remove networks
 
 ### Run Test Case
-- `make test` : run Django tests
+
+To run tests in your Django project, you can use the following commands:
+
+### Run Test Case
+
+To run tests in your Django project, you can use the following commands:
+
+- **Run all tests in the project:**
+  ```bash
+  make test
+  ```
+  This command is equivalent to:
+  ```bash
+  ./manage.py test
+  ```
+
+- **Run tests in a specific module:**
+  ```bash
+  ./manage.py test animals.tests
+  ```
+
+- **Run a specific test case class:**
+  ```bash
+  ./manage.py test animals.tests.AnimalTestCase
+  ```
+
+- **Run a specific test method:**
+  ```bash
+  ./manage.py test animals.tests.AnimalTestCase.test_animals_can_speak
+  ```
+
