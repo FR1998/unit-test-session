@@ -6,7 +6,7 @@ from uuid import uuid4
 from ipware import get_client_ip
 
 
-logger = logging.getLogger("project")
+logger = logging.getLogger("e-commerce")
 
 
 class LoggingMiddleware:
